@@ -111,7 +111,6 @@ class S3Service extends AbstractFileService implements IFileService {
   }
 
   async delete(file: DeleteFileType): Promise<void> {
-    console.log("Delete did invoked: " + file.fileKey)
     const command = new DeleteObjectCommand({
       Bucket: this.bucket_,
       Key: `${file.file_key}`,
@@ -119,10 +118,8 @@ class S3Service extends AbstractFileService implements IFileService {
 
     try {
       await this.client_.send(command)
-      console.log("Delete did completed: " + file.fileKey)
     } catch (e) {
       this.logger_.error(e)
-      console.log(`Delete did failed: ${e}`)
     }
   }
 
