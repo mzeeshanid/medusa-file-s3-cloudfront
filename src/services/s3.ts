@@ -6,7 +6,8 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  GetObjectCommand
+  GetObjectCommand,
+  ObjectCannedACL
 } from "@aws-sdk/client-s3"
 import { parse } from "path"
 import { AbstractFileService, IFileService } from "@medusajs/medusa"
@@ -75,7 +76,7 @@ class S3Service extends AbstractFileService implements IFileService {
 
   async uploadFile(
     file: Express.Multer.File,
-    options: { isProtected?: boolean; acl?: string } = {
+    options: { isProtected?: boolean; acl?: ObjectCannedACL } = {
       isProtected: false,
       acl: undefined,
     }
@@ -85,8 +86,10 @@ class S3Service extends AbstractFileService implements IFileService {
 
     const fileKey = `${this.prefix_}${parsedFilename.name}-${Date.now()}${parsedFilename.ext}`
 
+    const acl = options.acl ?? (options.isProtected ? ObjectCannedACL.private : ObjectCannedACL.public_read)
+
     const command = new PutObjectCommand({
-      ACL: options.acl ?? (options.isProtected ? "private" : "public-read"),
+      ACL: acl,
       Bucket: this.bucket_,
       Body: fs.createReadStream(file.path),
       Key: fileKey,
