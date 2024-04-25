@@ -99,7 +99,7 @@ class S3Service extends AbstractFileService implements IFileService {
 
     try {
       await this.client_.send(command)
-      const url = this.cloudFrontDistrubtuionId_ !== undefined ? `https:${this.cloudFrontDistrubtuionId_}.cloudfront.net/${fileKey}` : `${this.s3Url_}/${fileKey}`
+      const url = this.cloudFrontDistrubtuionId_ !== undefined ? `https://${this.cloudFrontDistrubtuionId_}.cloudfront.net/${fileKey}` : `${this.s3Url_}/${fileKey}`
       return {
         url: url,
         key: fileKey,
